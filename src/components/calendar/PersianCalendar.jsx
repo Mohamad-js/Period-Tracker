@@ -4,15 +4,21 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { toJalaali } from "jalaali-js";
 import { differenceInDays } from "date-fns";
-import back from './../../assets/images/main.jpg'
-import styles from './calendar.module.css'
-
-
-
+import back from './../../assets/images/main.jpg';
+import styles from './calendar.module.css';
 
 const PersianCalendar = () => {
-  const [periodStartDate, setPeriodStartDate] = useState('انتخاب کنید');
-  const [nextPeriodDate, setNextPeriodDate] = useState(null);
+  // Load initial state from local storage
+  const [periodStartDate, setPeriodStartDate] = useState(() => {
+    const savedPeriodStartDate = localStorage.getItem("periodStartDate");
+    return savedPeriodStartDate ? new Date(savedPeriodStartDate) : "انتخاب کنید";
+  });
+
+  const [nextPeriodDate, setNextPeriodDate] = useState(() => {
+    const savedNextPeriodDate = localStorage.getItem("nextPeriodDate");
+    return savedNextPeriodDate ? new Date(savedNextPeriodDate) : null;
+  });
+
   const [daysRemaining, setDaysRemaining] = useState(null);
   const [today, setToday] = useState(new Date());
 
@@ -30,8 +36,13 @@ const PersianCalendar = () => {
   const handlePeriodStartDateChange = (dateObject) => {
     if (!dateObject) return;
     setPeriodStartDate(dateObject);
+
     const nextDate = calculateNextPeriodDate(dateObject);
     setNextPeriodDate(nextDate);
+
+    // Save to local storage
+    localStorage.setItem("periodStartDate", dateObject.toDate());
+    localStorage.setItem("nextPeriodDate", nextDate);
   };
 
   const openCalendar = () => {
@@ -92,61 +103,57 @@ const PersianCalendar = () => {
   return (
     <div className={styles.container}>
       <div className={styles.imgHolder}>
-         <img className={styles.back} src={back} alt="background flower" />
+        <img className={styles.back} src={back} alt="background flower" />
       </div>
 
       <div className={styles.mainHolder}>
-         <div className={styles.curHolder}>
-            <div className={styles.curDate}>
-               <div>تاریخ امروز:</div>
-               <p>{toPersianNumber(toPersianDateString(today))}</p>
-            </div>
-         </div>
+        <div className={styles.curHolder}>
+          <div className={styles.curDate}>
+            <div>تاریخ امروز:</div>
+            <p>{toPersianNumber(toPersianDateString(today))}</p>
+          </div>
+        </div>
 
-         <div className={styles.pickingHolder}>
-            <label>تاریخ شروع پریود قبلی خود را وارد نمایید:</label>
+        <div className={styles.pickingHolder}>
+          <label>تاریخ شروع پریود قبلیت رو وارد کن:</label>
 
-            <div className={styles.chooseHolder}>
-               <DatePicker
-                  value={periodStartDate}
-                  onChange={handlePeriodStartDateChange}
-                  calendar={persian}
-                  locale={persian_fa}
-                  format="YYYY/MM/DD"
-                  calendarPosition="bottom-right"
-                  inputClass="custom-input"
-                  ref={datePickerRef}
-                  onFocus={openCalendar}
-                  renderDay={renderDay}
-               />
-            </div>
-         </div>
-
+          <div className={styles.chooseHolder}>
+            <DatePicker
+              value={periodStartDate}
+              onChange={handlePeriodStartDateChange}
+              calendar={persian}
+              locale={persian_fa}
+              format="YYYY/MM/DD"
+              calendarPosition="bottom-right"
+              inputClass="custom-input"
+              ref={datePickerRef}
+              onFocus={openCalendar}
+              renderDay={renderDay}
+            />
+          </div>
+        </div>
       </div>
+
       <div className={styles.datesHolder}>
-         {nextPeriodDate && (
-            <div className={styles.nextHolder}>
-               <div className={styles.next}>
-                  <h3>پریود بعدی</h3>
-                  <p>
-                  {toPersianNumber(toPersianDateString(nextPeriodDate))}
-                  </p>
-               </div>
-
-               <div className={styles.period}>
-                  {daysRemaining !== null && (
-                  <p>
-                     {daysRemaining > 0
-                        ? `${toPersianNumber(daysRemaining)} روز باقی مانده`
-                        : "امروز احتمالا پریودت شروع میشه"}
-                  </p>
-                  )}
-               </div>
+        {nextPeriodDate && (
+          <div className={styles.nextHolder}>
+            <div className={styles.next}>
+              <h3>پریود بعدیت</h3>
+              <p>{toPersianNumber(toPersianDateString(nextPeriodDate))}</p>
             </div>
-         )}
+
+            <div className={styles.period}>
+              {daysRemaining !== null && (
+                <p>
+                  {daysRemaining > 0
+                    ? `${toPersianNumber(daysRemaining)} روز باقی مونده`
+                    : "امروز احتمالا پریودت شروع میشه"}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
       </div>
-
-
     </div>
   );
 };
