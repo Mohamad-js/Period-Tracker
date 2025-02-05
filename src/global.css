@@ -1,0 +1,31 @@
+* {
+   padding: 0;
+   margin: 0;
+   box-sizing: border-box;
+}
+
+@font-face {
+   font-family: vazirl;
+   src: url('./assets/fonts/Vazir-Light.ttf');
+}
+
+@font-face {
+   font-family: vazirm;
+   src: url('./assets/fonts/Vazir-Medium.ttf');
+}
+
+@font-face {
+   font-family: vazirb;
+   src: url('./assets/fonts/Vazir-Bold.ttf');
+}
+
+.custom-input {
+   top: 45px;
+   width: 150px;
+   background-color: rgb(255, 255, 255);
+   border: none;
+   color: black;
+   border-radius: 10px;
+   padding: 10px 30px;
+   font: 20px vazirl;
+}
