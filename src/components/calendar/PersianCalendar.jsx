@@ -11,23 +11,20 @@ const PersianCalendar = () => {
   // Load initial state from local storage
   const [periodStartDate, setPeriodStartDate] = useState(() => {
     const savedPeriodStartDate = localStorage.getItem("periodStartDate");
-    return savedPeriodStartDate ? new Date(savedPeriodStartDate) : "انتخاب کنید";
+    return savedPeriodStartDate ? new Date(savedPeriodStartDate) : null;
   });
-
   const [nextPeriodDate, setNextPeriodDate] = useState(() => {
     const savedNextPeriodDate = localStorage.getItem("nextPeriodDate");
     return savedNextPeriodDate ? new Date(savedNextPeriodDate) : null;
   });
-
   const [daysRemaining, setDaysRemaining] = useState(null);
   const [today, setToday] = useState(new Date());
-
   const datePickerRef = useRef(null);
 
   // Function to calculate the next period date
   const calculateNextPeriodDate = (startDate, cycleLength = 28) => {
     if (!startDate) return null;
-    const nextDate = new Date(startDate.toDate());
+    const nextDate = new Date(startDate); // Ensure startDate is a Date object
     nextDate.setDate(nextDate.getDate() + cycleLength);
     return nextDate;
   };
@@ -35,18 +32,13 @@ const PersianCalendar = () => {
   // Handle period start date change
   const handlePeriodStartDateChange = (dateObject) => {
     if (!dateObject) return;
-    setPeriodStartDate(dateObject);
-
-    const nextDate = calculateNextPeriodDate(dateObject);
+    const date = dateObject.toDate(); // Convert DateObject to Date
+    setPeriodStartDate(date);
+    const nextDate = calculateNextPeriodDate(date);
     setNextPeriodDate(nextDate);
-
     // Save to local storage
-    localStorage.setItem("periodStartDate", dateObject.toDate());
-    localStorage.setItem("nextPeriodDate", nextDate);
-  };
-
-  const openCalendar = () => {
-    datePickerRef.current.openCalendar();
+    localStorage.setItem("periodStartDate", date.toISOString());
+    localStorage.setItem("nextPeriodDate", nextDate.toISOString());
   };
 
   // Function to convert Gregorian date to Persian (Jalali) date string
@@ -59,10 +51,26 @@ const PersianCalendar = () => {
   // Function to convert English numbers to Persian numerals
   const toPersianNumber = (number) => {
     const persianNumbers = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
-    return String(number).replace(
-      /\d/g,
-      (digit) => persianNumbers[parseInt(digit)]
-    );
+    return String(number).replace(/\d/g, (digit) => persianNumbers[parseInt(digit)]);
+  };
+
+  // Calculate the current day of the menstrual cycle
+  const calculateCycleDay = () => {
+    if (!periodStartDate || !today) return null;
+    const daysSinceStart = differenceInDays(today, periodStartDate);
+    return Math.max(0, daysSinceStart); // Ensure non-negative value
+  };
+
+  const cycleDay = calculateCycleDay();
+
+  // Reset the period start date when the button is clicked
+  const handleNewPeriodStart = () => {
+    setPeriodStartDate(today);
+    const nextDate = calculateNextPeriodDate(today);
+    setNextPeriodDate(nextDate);
+    // Save to local storage
+    localStorage.setItem("periodStartDate", today.toISOString());
+    localStorage.setItem("nextPeriodDate", nextDate.toISOString());
   };
 
   useEffect(() => {
@@ -76,7 +84,6 @@ const PersianCalendar = () => {
     const intervalId = setInterval(() => {
       setToday(new Date());
     }, 60 * 60 * 1000); // Update every hour
-
     return () => clearInterval(intervalId);
   }, []);
 
@@ -105,7 +112,6 @@ const PersianCalendar = () => {
       <div className={styles.imgHolder}>
         <img className={styles.back} src={back} alt="background flower" />
       </div>
-
       <div className={styles.mainHolder}>
         <div className={styles.curHolder}>
           <div className={styles.curDate}>
@@ -113,10 +119,8 @@ const PersianCalendar = () => {
             <p>{toPersianNumber(toPersianDateString(today))}</p>
           </div>
         </div>
-
         <div className={styles.pickingHolder}>
           <label>تاریخ شروع پریود قبلیت رو وارد کن:</label>
-
           <div className={styles.chooseHolder}>
             <DatePicker
               value={periodStartDate}
@@ -127,31 +131,36 @@ const PersianCalendar = () => {
               calendarPosition="bottom-right"
               inputClass="custom-input"
               ref={datePickerRef}
-              onFocus={openCalendar}
+              onFocus={() => datePickerRef.current?.openCalendar()}
               renderDay={renderDay}
             />
           </div>
         </div>
       </div>
-
       <div className={styles.datesHolder}>
         {nextPeriodDate && (
-          <div className={styles.nextHolder}>
+         <div className={styles.nextHolder}>
             <div className={styles.next}>
-              <h3>پریود بعدیت</h3>
-              <p>{toPersianNumber(toPersianDateString(nextPeriodDate))}</p>
+               <h3>پریود بعدیت</h3>
+               <p>{toPersianNumber(toPersianDateString(nextPeriodDate))}</p>
             </div>
-
-            <div className={styles.period}>
-              {daysRemaining !== null && (
-                <p>
+            <div className={styles.buttonHolder}>
+               {daysRemaining !== null && (
+                  <p>
                   {daysRemaining > 0
-                    ? `${toPersianNumber(daysRemaining)} روز باقی مونده`
-                    : "امروز احتمالا پریودت شروع میشه"}
-                </p>
-              )}
+                     ? `${toPersianNumber(daysRemaining)} روز باقی مونده`
+                     : null}
+                  </p>
+               )}
+               {cycleDay >= 21 && (
+
+               <button onClick={handleNewPeriodStart} className={styles.restartButton}>
+                  پریود شدم
+               </button>
+
+               )}
             </div>
-          </div>
+         </div>
         )}
       </div>
     </div>
