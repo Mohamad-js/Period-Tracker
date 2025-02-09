@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">period-tracker</string>
-    <string name="title_activity_main">period-tracker</string>
+    <string name="app_name">Ghazalm App</string>
+    <string name="title_activity_main">Ghazalm App</string>
     <string name="package_name">com.period.tracking.app</string>
     <string name="custom_url_scheme">com.period.tracking.app</string>
 </resources>

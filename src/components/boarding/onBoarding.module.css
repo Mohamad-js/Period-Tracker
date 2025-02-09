@@ -1,0 +1,115 @@
+.onboardingContainer {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+   height: 100vh;
+   width: 100%;
+   background-color: #D2042D;
+
+
+   & .logo {
+      width: 30%;
+      animation: logo 30s linear infinite;
+   }
+
+
+   & h2 {
+      font: 25px vazirl;
+      color: white;
+   }
+
+   & .onboardingContent {
+      padding: 20px;
+      border-radius: 10px;
+      width: 100%;
+      height: 50vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-around;
+
+
+
+      & .inputGroup {
+         margin-bottom: 15px;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         flex-direction: column;
+       
+
+         & label {
+            margin-top: 40px;
+            font: 18px vazirl;
+            color: white;
+            margin-bottom: 10px;
+         }
+
+
+         & .aveCycle {
+            top: 45px;
+            width: 100px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.3);
+            border: none;
+            color: rgb(255, 255, 255);
+            border-radius: 10px;
+            padding: 10px 30px;
+            font: 20px vazirl;
+            outline: none;
+            direction: ltr;
+
+            &:focus {
+               border: white 1px solid;
+            }
+         }
+
+         ::placeholder {
+            color: rgb(177, 177, 177);
+         }
+      }
+
+      & .saveButton {
+         background-color: #ffffff;
+         color: #D2042D;
+         border: none;
+         padding: 10px 70px;
+         border-radius: 5px;
+         cursor: pointer;
+         font: 17px vazirb;
+
+         &:active {
+            background-color: #cecece;
+         }
+      }
+   }
+
+   & .welcomeHolder {
+      position: absolute;
+      width: 100%;
+      height: 100vh;
+      background-color: white;
+      color: rgb(129, 129, 129);
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+      right: 0;
+      gap: 20px;
+      font: 25px vazirl;
+      animation: logoHolder 2s 3s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+   }
+}
+
+@keyframes logo {
+   to {
+      rotate: 180deg;
+   }
+}
+
+@keyframes logoHolder {
+   to {
+      right: -100%;
+   }
+}
