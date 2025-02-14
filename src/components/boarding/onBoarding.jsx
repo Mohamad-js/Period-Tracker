@@ -19,7 +19,7 @@ const OnboardingScreen = ({ onComplete }) => {
    const [nextPeriodDate, setNextPeriodDate] = useState(() => {
       const savedNextPeriodDate = localStorage.getItem("nextPeriodDate");
       return savedNextPeriodDate ? new Date(savedNextPeriodDate) : null;
-    });
+   });
   
  
    const handlePeriodStartDateChange = (dateObject) => {
@@ -34,7 +34,7 @@ const OnboardingScreen = ({ onComplete }) => {
       // Save to local storage
       localStorage.setItem("periodStartDate", date.toISOString());
       localStorage.setItem("nextPeriodDate", nextDate.toISOString());
-    };
+   };
 
    const calculateNextPeriodDate = (startDate, cycleLength = 28) => {
       if (!startDate) return null;
@@ -45,7 +45,7 @@ const OnboardingScreen = ({ onComplete }) => {
  
     const handleCycleLengthChange = (e) => {
       const inputValue = e.target.value; // Get the raw input value
-      setCycleLength(inputValue); // Allow free typing without restrictions
+      setCycleLength(inputValue ? inputValue : 28); // Allow free typing without restrictions
    };
    
    const handleCycleLengthBlur = () => {
@@ -78,6 +78,16 @@ const OnboardingScreen = ({ onComplete }) => {
       }
 
      value = Math.max(21, Math.min(45, value)); // Clamp to 21-45
+
+     setCycleLength(value.toString()); // Update state with clamped value
+     localStorage.setItem("cycleLength", value.toString()); // Save to local storage
+  
+     // Recalculate next period date if periodStartDate exists
+     if (periodStartDate) {
+        const nextDate = calculateNextPeriodDate(periodStartDate, value);
+        setNextPeriodDate(nextDate);
+        localStorage.setItem("nextPeriodDate", nextDate.toISOString());
+     }
  
      // Save data to local storage
      localStorage.setItem("periodStartDate", periodStartDate.toISOString());

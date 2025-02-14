@@ -1,9 +1,9 @@
 {
-   "appId": "com.period.tracking.app",
-   "appName": "Ghazalm App",
-   "webDir": "dist",
-   "bundledWebRuntime": false,
-   "android": {
-      "icon": "./resources/android/heavy-logo.png"
-   }
+  "appId": "com.period.tracking.app",
+  "appName": "Ghazalm App",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "icon": "./resources/android/heavy-logo.png"
+  }
 }

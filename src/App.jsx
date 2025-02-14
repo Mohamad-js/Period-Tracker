@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PersianCalendar from "./components/calendar/PersianCalendar";
 import OnboardingScreen from "./components/boarding/onBoarding";
-
+import { LocalNotifications } from '@capacitor/local-notifications';
 
 
 const App = () => {
@@ -15,6 +15,21 @@ const App = () => {
   const handleOnboardingComplete = () => {
     setIsOnboardingComplete(true);
   };
+
+  useEffect(() => {
+   const registerNotifications = async () => {
+     await LocalNotifications.requestPermissions();
+     await LocalNotifications.registerNotificationChannels([
+       {
+         id: 'period-reminder',
+         name: 'Period Reminder',
+         importance: 4,
+         sound: null,
+       },
+     ]);
+   };
+   registerNotifications();
+ }, []);
 
   return (
     <div>

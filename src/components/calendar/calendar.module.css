@@ -148,7 +148,7 @@
    
                   & .restartButton {
                      padding: 10px 30px;
-                     background-color: red;
+                     background-color: #D2042D;
                      font: 16px vazirm;
                      border: none;
                      box-shadow: 1px 1px 5px 1px black;
@@ -170,7 +170,11 @@
          background-color: rgba(0, 0, 0, 0.5);
          margin-top: 10px;
          border-radius: 10px;
-         padding: 10px;
+         padding: 15px;
+         display: flex;
+         flex-direction: column;
+         gap: 10px;
+         overflow: hidden;
          
 
          & .title {
@@ -187,6 +191,48 @@
 
          & .info {
             font: 17px vazirl;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+
+            & .tabsHolder {
+               width: 100%;
+               height: fit-content;
+               display: flex;
+               align-items: center;
+               overflow: hidden;
+
+
+               & button {
+                  padding: 5px 14px;
+                  font: 18px vazirl;
+                  color: white;
+                  border: none;
+                  border-bottom: 1px solid white;
+                  flex-grow: 1;
+                  background-color: #d2042d00;
+               }
+
+               & .active {
+                  background-color: rgb(255, 255, 255);
+                  color: black;
+               }
+            }
+
+            & .display {
+               width: 100%;
+               height: 80%;
+               overflow-y: scroll;
+               padding-bottom: 5px;
+
+               & .displayText {
+                  padding: 10px 0;
+                  border-radius: 10px;
+                  font: 18px vazirl;
+                  text-align: justify;
+               }
+            }
          }
       }
 
