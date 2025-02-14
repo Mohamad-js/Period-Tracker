@@ -16,6 +16,7 @@
     "@capacitor/local-notifications": "^7.0.0",
     "axios": "^1.7.9",
     "jalaali-js": "^1.2.7",
+    "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-date-object": "^2.1.9",
     "react-datepicker": "^8.0.0",

@@ -4,6 +4,7 @@ import persian_fa from "react-date-object/locales/persian_fa";
 import styles from './onBoarding.module.css';
 import DatePicker from "react-multi-date-picker";
 import logo from './../../assets/favicon.png'
+import PropTypes from "prop-types";
 
 
 const OnboardingScreen = ({ onComplete }) => {
@@ -20,7 +21,8 @@ const OnboardingScreen = ({ onComplete }) => {
       const savedNextPeriodDate = localStorage.getItem("nextPeriodDate");
       return savedNextPeriodDate ? new Date(savedNextPeriodDate) : null;
    });
-  
+   
+   console.log(nextPeriodDate);
  
    const handlePeriodStartDateChange = (dateObject) => {
       if (!dateObject) return;
@@ -77,23 +79,23 @@ const OnboardingScreen = ({ onComplete }) => {
          value = 28; // Default to 28 if invalid
       }
 
-     value = Math.max(21, Math.min(45, value)); // Clamp to 21-45
+      value = Math.max(21, Math.min(45, value)); // Clamp to 21-45
 
-     setCycleLength(value.toString()); // Update state with clamped value
-     localStorage.setItem("cycleLength", value.toString()); // Save to local storage
+      setCycleLength(value.toString()); // Update state with clamped value
+      localStorage.setItem("cycleLength", value.toString()); // Save to local storage
   
-     // Recalculate next period date if periodStartDate exists
-     if (periodStartDate) {
-        const nextDate = calculateNextPeriodDate(periodStartDate, value);
-        setNextPeriodDate(nextDate);
-        localStorage.setItem("nextPeriodDate", nextDate.toISOString());
-     }
+      // Recalculate next period date if periodStartDate exists
+      if (periodStartDate) {
+         const nextDate = calculateNextPeriodDate(periodStartDate, value);
+         setNextPeriodDate(nextDate);
+         localStorage.setItem("nextPeriodDate", nextDate.toISOString());
+      }
  
-     // Save data to local storage
-     localStorage.setItem("periodStartDate", periodStartDate.toISOString());
- 
-     // Notify parent component to switch to the main calendar
-     onComplete();
+      // Save data to local storage
+      localStorage.setItem("periodStartDate", periodStartDate.toISOString());
+
+      // Notify parent component to switch to the main calendar
+      onComplete();
    };
  
    return (
@@ -128,10 +130,16 @@ const OnboardingScreen = ({ onComplete }) => {
 
          <div className={styles.welcomeHolder}>
             <div className={styles.welcomeMsg}>تقدیم به غزلم :)</div>
+            <div className={styles.version}>نسخه ی 1.3.7</div>
          </div>
 
      </div>
    );
- };
+};
+
+OnboardingScreen.propTypes= {
+   onComplete: PropTypes.func.isRequired,
+} 
+
 
 export default OnboardingScreen;

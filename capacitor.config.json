@@ -1,6 +1,6 @@
 {
   "appId": "com.period.tracking.app",
-  "appName": "Ghazalm App",
+  "appName": "Ghazalam App",
   "webDir": "dist",
   "bundledWebRuntime": false,
   "android": {

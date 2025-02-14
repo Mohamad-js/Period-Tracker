@@ -439,68 +439,72 @@ const PersianCalendar = () => {
 
 
 
-   const calculatePmsDate = (cycleLength) => {
-      const cycleLengthNum = parseInt(cycleLength, 10);
-      const pmsStartDay = cycleLengthNum - 9; // PMS starts 9 days before the next period
-      return pmsStartDay;
-   };
- 
-   const calculateNotificationDates = (nextPeriodDate, cycleLength) => {
-      if (!nextPeriodDate || !cycleLength) return [];
+  const calculatePmsDate = (cycleLength) => {
+   const cycleLengthNum = parseInt(cycleLength, 10);
+   const pmsStartDay = cycleLengthNum - 9; // PMS starts 9 days before the next period
+   return pmsStartDay;
+};
 
-      const cycleLengthNum = parseInt(cycleLength, 10);
-      const pmsStartDay = calculatePmsDate(cycleLength);
+const calculateNotificationDates = (nextPeriodDate, cycleLength) => {
+   if (!nextPeriodDate || !cycleLength) return [];
+   const cycleLengthNum = parseInt(cycleLength, 10);
+   const pmsStartDay = calculatePmsDate(cycleLength);
 
-      // 5 days before PMS
-      const fiveDaysBeforePms = new Date(nextPeriodDate);
-      fiveDaysBeforePms.setDate(fiveDaysBeforePms.getDate() - (pmsStartDay + 5));
+   console.log(cycleLengthNum);
 
-      // Daily during the period (first 5 days)
-      const periodNotifications = [];
-      for (let i = 0; i < 5; i++) {
-         const notificationDate = new Date(nextPeriodDate);
-         notificationDate.setDate(notificationDate.getDate() - (5 - i));
-         periodNotifications.push(notificationDate);
-      }
+   // 5 days before PMS
+   const fiveDaysBeforePms = new Date(nextPeriodDate);
+   fiveDaysBeforePms.setDate(fiveDaysBeforePms.getDate() - (pmsStartDay + 5));
+   fiveDaysBeforePms.setHours(0, 0, 0, 0); // Set time to 12:00 AM
 
-      return [fiveDaysBeforePms, ...periodNotifications];
-   };
+   // Daily during the period (first 5 days)
+   const periodNotifications = [];
+   for (let i = 0; i < 5; i++) {
+      const notificationDate = new Date(nextPeriodDate);
+      notificationDate.setDate(notificationDate.getDate() - (5 - i));
+      notificationDate.setHours(8, 0, 0, 0); // Set time to 8:00 AM
+      periodNotifications.push(notificationDate);
+   }
 
-   const scheduleNotifications = async (nextPeriodDate, cycleLength) => {
-      const notificationDates = calculateNotificationDates(nextPeriodDate, cycleLength);
-      
-      for (let i = 0; i < notificationDates.length; i++) {
-         const date = notificationDates[i];
-         const title = i === 0 ? '5 روز تا PMS' : `روز ${i} پریود`;
-         const body = i === 0 ? 'آماده شوید برای PMS' : 'مراحل پریود خود را مدیریت کنید';
-      
-         await LocalNotifications.schedule({
-            notifications: [
+   return [fiveDaysBeforePms, ...periodNotifications];
+};
+
+const scheduleNotifications = async (nextPeriodDate, cycleLength) => {
+   const notificationDates = calculateNotificationDates(nextPeriodDate, cycleLength);
+
+   for (let i = 0; i < notificationDates.length; i++) {
+      const date = notificationDates[i];
+      const title = i === 0 ? '5 روز تا PMS' : `روز ${i} پریود`;
+      const body = i === 0 ? 'آماده شوید برای PMS' : 'مراحل پریود خود را مدیریت کنید';
+
+      await LocalNotifications.schedule({
+         notifications: [
             {
                title,
                body,
                id: i + 1, // Unique ID for each notification
-               schedule: { at: date },
+               schedule: { at: date }, // Notification schedule
                attachments: null,
                actionTypeId: '',
                extra: null,
             },
-            ],
-         });
-      }
-   };
+         ],
+      });
+   }
+};
 
-   useEffect(() => {
-      if (nextPeriodDate && cycleLength) {
-        scheduleNotifications(nextPeriodDate, cycleLength);
-      }
-    }, [nextPeriodDate, cycleLength]);
+useEffect(() => {
+   if (nextPeriodDate && cycleLength) {
+      scheduleNotifications(nextPeriodDate, cycleLength);
+   }
+}, [nextPeriodDate, cycleLength]);
 
   return (
     <div className={styles.container}>
       <div className={styles.imgHolder}>
         <img className={styles.back} src={back} alt="background flower" />
       </div>
+      <div className={styles.overlay}></div>
       <div className={styles.mainHolder}>
         <div className={styles.curDate}>
           <div>تاریخ امروز:</div>
@@ -562,7 +566,7 @@ const PersianCalendar = () => {
             </div>
           )}
         </div>
-      {/* Display the current phase */}
+
          <div className={styles.phaseInfo}>
             <div className={styles.title}>وضعیت فعلیت:{getPhaseTitle()}</div>
             <div className={styles.info}>
